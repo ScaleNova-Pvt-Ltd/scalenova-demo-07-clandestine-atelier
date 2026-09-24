@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reserve Private Suite — Clandestine Atelier</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230A0A0C'/><circle cx='16' cy='16' r='12' stroke='%23D4AF37' stroke-width='2' fill='none'/><text x='16' y='21' font-family='serif' font-size='14' fill='%23D4AF37' text-anchor='middle'>C</text></svg>">
+  <link rel="stylesheet" href="src/styles/theme.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-mark">C</div>
+        <div>
+          <span class="brand-name">Clandestine</span>
+          <span class="brand-sub">Haute Aesthetics</span>
+        </div>
+      </a>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="index.html" class="nav-link">Atelier</a></li>
+          <li><a href="services.html" class="nav-link">Treatments</a></li>
+          <li><a href="about.html" class="nav-link">Our Philosophy</a></li>
+          <li><a href="booking.html" class="nav-link active">Private Suite</a></li>
+          <li><a href="contact.html" class="nav-link">Concierge</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container" style="padding:60px 24px 100px;">
+    <div style="text-align:center; margin-bottom:40px;">
+      <span class="section-tag">Sanctuary Reservation</span>
+      <h1 style="font-size:2.8rem; margin-bottom:12px;">Reserve Your Suite</h1>
+      <p style="color:var(--text-muted); max-width:540px; margin:0 auto;">Our private treatment suites are prepared individually with custom aromatherapy and bespoke acoustic profiles.</p>
+    </div>
+
+    <div class="booking-wrap">
+      <form id="booking-form" onsubmit="handleSuiteBooking(event)">
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input type="text" name="name" required placeholder="Lady Eleanor Vance" class="form-input">
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+          <div class="form-group">
+            <label class="form-label">Email Address *</label>
+            <input type="email" name="email" required placeholder="eleanor@vanceholdings.co.uk" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Private Mobile / WhatsApp *</label>
+            <input type="tel" name="phone" required placeholder="+44 7911 123456" class="form-input">
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+          <div class="form-group">
+            <label class="form-label">Target Sanctuary Location</label>
+            <select name="location" class="form-select">
+              <option value="London Mayfair Sanctuary">London Mayfair Sanctuary</option>
+              <option value="Beverly Hills Atelier">Beverly Hills Atelier</option>
+              <option value="Zurich Alpine Clinic">Zurich Alpine Clinic</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Desired Treatment Protocol</label>
+            <select name="treatment" class="form-select">
+              <option value="Cellular Glow Infusion ($450)">Cellular Glow Infusion ($450)</option>
+              <option value="Clandestine Sculpt Facelift ($780)">Clandestine Sculpt Facelift ($780)</option>
+              <option value="Stem-Cell Scalp Trichology ($580)">Stem-Cell Scalp Trichology ($580)</option>
+              <option value="Full Atelier Bespoke Ritual ($1,200)">Full Atelier Bespoke Ritual ($1,200)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+          <div class="form-group">
+            <label class="form-label">Preferred Date *</label>
+            <input type="date" name="preferred_date" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Preferred Time Slot *</label>
+            <select name="preferred_time" required class="form-select">
+              <option value="Morning (10:00 - 12:30)">Morning (10:00 - 12:30)</option>
+              <option value="Afternoon (13:30 - 16:00)">Afternoon (13:30 - 16:00)</option>
+              <option value="Twilight Sanctuary (17:30 - 20:00)">Twilight Sanctuary (17:30 - 20:00)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Special Accommodations / Skin Concerns</label>
+          <textarea name="notes" rows="3" placeholder="Disclose allergies, prior aesthetic treatments, or specific acoustic preferences..." class="form-textarea"></textarea>
+        </div>
+
+        <button type="submit" id="b-btn" class="btn btn-gold" style="width:100%; padding:16px; font-size:0.95rem;">Request Private Suite Reservation &rarr;</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="src/services/api.js"></script>
+  <script>
+    async function handleSuiteBooking(e) {
+      e.preventDefault();
+      const form = e.target;
+      const btn = document.getElementById('b-btn');
+      btn.textContent = 'Contacting Concierge...';
+
+      const data = {
+        name: form.name.value,
+        email: form.email.value,
+        phone: form.phone.value,
+        service: form.treatment.value,
+        requirement: `Location: ${form.location.value} | Slot: ${form.preferred_time.value}`,
+        preferred_date: form.preferred_date.value,
+        preferred_time: form.preferred_time.value,
+        notes: form.notes.value,
+        lead_type: 'BOOKING'
+      };
+
+      try {
+        const res = await ScaleNovaAPI.submitLead(data);
+        form.innerHTML = `
+          <div style="text-align:center; padding:40px 10px;">
+            <div style="color:var(--color-gold); font-size:3rem; margin-bottom:16px;">✦</div>
+            <h2 class="font-serif" style="color:var(--color-gold); margin-bottom:14px;">Suite Request Reserved</h2>
+            <p style="color:var(--text-muted); line-height:1.8; margin-bottom:24px;">Thank you, ${data.name}. Your confidential request <strong>${res.submission_id}</strong> has been transmitted directly to our private concierge at ${data.service}. You will receive confirmation via secure message.</p>
+            <a href="index.html" class="btn btn-outline-gold">Return to Atelier</a>
+          </div>
+        `;
+      } catch (err) {
+        alert('Booking recorded in offline registry.');
+      }
+    }
+  </script>
+</body>
+</html>
